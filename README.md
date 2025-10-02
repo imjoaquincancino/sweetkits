@@ -103,8 +103,9 @@
 
 ### **🏠 Página Principal (`/`)**
 - **Hero Section** con call-to-action principal
-- **Sección "Cómo Funciona"** con 3 pasos explicativos
+- **Sección "Cómo Funciona"** con 3 pasos del flujo real de SweetKit
 - **Recetas Destacadas** con tarjetas interactivas
+- **Sección "Nuestros SweetKits"** mostrando las cajas físicas con QR
 - **Características del producto** con iconos profesionales
 - **Footer** con información de contacto
 
@@ -129,6 +130,18 @@
 - **Resumen de compra** con desglose de precios
 - **Botones de acción** (Proceder al Pago, Vaciar Carrito)
 - **Características de servicio** (Envío, Seguridad, Devoluciones)
+
+### **🔐 Área de Administración (`/admin`)**
+- **Acceso protegido** con contraseña para administradores
+- **Panel de gestión** de códigos QR
+- **Vista previa** de la experiencia del usuario
+- **Herramientas de administración** para la feria
+
+### **📱 Gestión de Códigos QR (`/admin/qr-codes`)**
+- **Vista completa** de todos los códigos QR generados
+- **Descarga individual** y masiva de códigos
+- **Vista previa** de códigos con información de recetas
+- **Gestión eficiente** para impresión y distribución
 
 ## 🎨 Sistema de Diseño
 
@@ -220,6 +233,18 @@ import QRCodeDisplay from './components/QRCodeDisplay';
   recipeId={1} 
   recipeName="Kuchen de Manzana"
   className="max-w-md"
+/>
+```
+
+#### **QRCodeBadge** (`components/QRCodeBadge.jsx`)
+```jsx
+import QRCodeBadge from './components/QRCodeBadge';
+
+<QRCodeBadge 
+  recipeId={1} 
+  recipeName="Kuchen de Manzana"
+  size="sm"
+  showActions={true}
 />
 ```
 
@@ -594,6 +619,7 @@ import { Heart } from 'lucide-react';
 - [x] Almacenamiento en MongoDB con Mongoose
 - [x] API REST para gestión de códigos QR
 - [x] Componente QRCodeDisplay reutilizable
+- [x] Componente QRCodeBadge compacto para tarjetas
 - [x] Funcionalidades de descarga y compartir
 - [x] Página de administración para gestión masiva
 

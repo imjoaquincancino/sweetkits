@@ -7,7 +7,9 @@ import { useState } from 'react';
 import Navigation from '../components/Navigation';
 import Button from '../components/Button';
 import RecipeCard from '../components/RecipeCard';
-import { Package, Smartphone, Smile } from 'lucide-react';
+import { Package, Smartphone, Smile, Clock, Users, QrCode } from 'lucide-react';
+import QRCodeBadge from '../components/QRCodeBadge';
+import OptimizedImage from '../components/OptimizedImage';
 
 export default function RecetasPage() {
   const [selectedCategory, setSelectedCategory] = useState('Todas las Recetas');
@@ -35,11 +37,11 @@ export default function RecetasPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Nuestro Catálogo de Recetas
+              Nuestros SweetKits
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Descubre nuestra colección completa de recetas dulces chilenas tradicionales.
-              Cada SweetKit viene con ingredientes pre-medidos y instrucciones detalladas.
+              Descubre nuestra colección completa de SweetKits con recetas dulces chilenas tradicionales.
+              Cada caja incluye ingredientes pre-medidos y un código QR para acceder a las instrucciones.
             </p>
           </motion.div>
 
@@ -67,10 +69,72 @@ export default function RecetasPage() {
             ))}
           </motion.div>
 
-          {/* Recipes Grid */}
+          {/* SweetKits Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredRecipes.map((recipe, index) => (
-              <RecipeCard key={recipe.id} recipe={recipe} index={index} />
+              <motion.div
+                key={recipe.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                {/* SweetKit Box Visual */}
+                <div className="relative h-48 overflow-hidden">
+                  {/* Recipe Image Background */}
+                  <OptimizedImage
+                    src={recipe.image}
+                    alt={recipe.name}
+                    className="w-full h-full object-cover"
+                    fallback="🍰"
+                  />
+                  
+                  {/* SweetKit Brand Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="bg-orange-600 text-white px-3 py-1 rounded-lg text-sm font-bold inline-block mb-2">
+                        SweetKit
+                      </div>
+                      <p className="text-white font-medium text-sm">{recipe.name}</p>
+                    </div>
+                  </div>
+                  
+                  {/* QR Code Badge */}
+                  <div className="absolute top-4 right-4">
+                    <QRCodeBadge 
+                      recipeId={recipe.id} 
+                      recipeName={recipe.name}
+                      size="sm"
+                      showActions={true}
+                    />
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <h4 className="text-xl font-bold text-gray-900 mb-2">{recipe.name}</h4>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recipe.description}</p>
+                  
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <span className="flex items-center gap-1">
+                      <Clock size={16} />
+                      {recipe.time}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Users size={16} />
+                      {recipe.servings} porciones
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-orange-600">
+                      ${recipe.price.toLocaleString()}
+                    </span>
+                    <Button href={`/recetas/${recipe.id}`} variant="primary" size="sm">
+                      Ver Receta
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -99,20 +163,21 @@ export default function RecetasPage() {
               {
                 step: "01",
                 icon: Package,
-                title: "Elige tu receta",
-                description: "Navega nuestro catálogo y selecciona la receta que más te guste. Cada SweetKit incluye todos los ingredientes necesarios."
+                title: "Compra tu SweetKit",
+                description: "Elige la receta que más te guste. Recibirás una caja con ingredientes pre-medidos y un código QR."
               },
               {
                 step: "02",
                 icon: Smartphone,
-                title: "Escanea el QR",
-                description: "Cada cajita viene con un código QR único que te lleva directamente a las instrucciones paso a paso."
+                title: "Escanea el QR de tu caja",
+                description: "Abre tu SweetKit y escanea el código QR que viene en la caja para acceder a la receta completa.",
+                showQR: true
               },
               {
                 step: "03",
                 icon: Smile,
-                title: "¡Disfruta!",
-                description: "Sigue las instrucciones, prepara tu receta y comparte el resultado con familiares y amigos."
+                title: "¡Cocina y disfruta!",
+                description: "Sigue las instrucciones paso a paso, usa los ingredientes de tu caja y crea una delicia única."
               }
             ].map((item, index) => (
               <motion.div
@@ -130,7 +195,22 @@ export default function RecetasPage() {
                   <item.icon size={24} className="text-orange-600" />
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h4>
-                <p className="text-gray-600">{item.description}</p>
+                <p className="text-gray-600 mb-4">{item.description}</p>
+                {item.showQR && (
+                  <div className="mt-4 flex flex-col items-center">
+                    <div className="mb-2">
+                      <QRCodeBadge 
+                        recipeId={1} 
+                        recipeName="Kuchen de Manzana"
+                        size="md"
+                        showActions={false}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 text-center">
+                      Escanea este código QR<br/>que viene en tu caja
+                    </p>
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>

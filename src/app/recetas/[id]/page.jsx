@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { recipes } from '../../data/recipes';
-import { Clock, Users, DollarSign, Heart, Printer, Share, ShoppingCart } from 'lucide-react';
+import { Clock, Users, DollarSign, Heart, Printer, Share, ShoppingCart, Smartphone } from 'lucide-react';
 import OptimizedImage from '../../components/OptimizedImage';
 import QRCodeDisplay from '../../components/QRCodeDisplay';
+import QRCodeBadge from '../../components/QRCodeBadge';
+import Navigation from '../../components/Navigation';
 
 export default function RecetaDetailPage() {
   const params = useParams();
@@ -31,30 +33,7 @@ export default function RecetaDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center">
-              <h1 className="text-3xl font-bold text-orange-600">🍪 SweetKit</h1>
-            </Link>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Inicio
-              </Link>
-              <Link href="/recetas" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Recetas
-              </Link>
-              <Link href="#sobre-nosotros" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Sobre Nosotros
-              </Link>
-              <Link href="#contacto" className="text-gray-700 hover:text-orange-600 transition-colors">
-                Contacto
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Navigation currentPath={`/recetas/${recipeId}`} />
 
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -67,7 +46,7 @@ export default function RecetaDetailPage() {
         </nav>
       </div>
 
-      {/* Recipe Hero */}
+      {/* SweetKit Hero */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -76,15 +55,39 @@ export default function RecetaDetailPage() {
             transition={{ duration: 0.6 }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-12"
           >
-            {/* Recipe Image & Info */}
+            {/* SweetKit Box Visual */}
             <div>
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <OptimizedImage 
-                  src={recipe.image} 
-                  alt={recipe.name}
-                  className="h-80 w-full"
-                  fallback="🍰"
-                />
+                {/* SweetKit Box with Image */}
+                <div className="relative h-80 overflow-hidden">
+                  <OptimizedImage 
+                    src={recipe.image} 
+                    alt={recipe.name}
+                    className="w-full h-full object-cover"
+                    fallback="🍰"
+                  />
+                  
+                  {/* SweetKit Brand Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="bg-orange-600 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-2">
+                        SweetKit
+                      </div>
+                      <p className="text-white font-medium text-lg">{recipe.name}</p>
+                    </div>
+                  </div>
+                  
+                  {/* QR Code Badge */}
+                  <div className="absolute top-4 right-4">
+                    <QRCodeBadge 
+                      recipeId={recipe.id} 
+                      recipeName={recipe.name}
+                      size="md"
+                      showActions={true}
+                    />
+                  </div>
+                </div>
+                
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-sm font-medium text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
@@ -252,36 +255,7 @@ export default function RecetaDetailPage() {
         </div>
       </section>
 
-      {/* QR Code Section */}
-      <section className="py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl shadow-lg p-8"
-          >
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              ¡Tu SweetKit te espera!
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Cada cajita viene con un código QR único que te lleva directamente a esta receta con instrucciones detalladas.
-            </p>
-            <div className="bg-gray-100 rounded-lg p-8 inline-block">
-              <div className="bg-white rounded-lg p-4 border-2 border-dashed border-orange-300">
-                <div className="text-center">
-                  <div className="text-6xl mb-2">📱</div>
-                  <div className="text-orange-600 font-bold text-lg">{recipe.qrCode}</div>
-                  <div className="text-sm text-gray-600 mt-2">Escanea este código QR</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* QR Code Section */}
+      {/* SweetKit Box Section */}
       <section className="py-12 bg-gradient-to-br from-orange-50 to-pink-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -292,19 +266,115 @@ export default function RecetaDetailPage() {
             className="text-center mb-12"
           >
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Código QR SweetKit
+              Tu SweetKit incluye
             </h3>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Escanea este código QR para acceder rápidamente a esta receta desde tu caja SweetKit
+              Una caja con ingredientes pre-medidos y un código QR para acceder a esta receta
             </p>
           </motion.div>
 
-          <div className="flex justify-center">
-            <QRCodeDisplay 
-              recipeId={recipe.id} 
-              recipeName={recipe.name}
-              className="max-w-md"
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* SweetKit Box Visual */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl shadow-lg p-8 text-center"
+            >
+              <div className="relative h-64 overflow-hidden rounded-xl mb-6">
+                <OptimizedImage 
+                  src={recipe.image} 
+                  alt={recipe.name}
+                  className="w-full h-full object-cover"
+                  fallback="🍰"
+                />
+                
+                {/* SweetKit Brand Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-orange-600 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-2">
+                      SweetKit
+                    </div>
+                    <p className="text-white font-medium text-lg">{recipe.name}</p>
+                  </div>
+                </div>
+                
+                {/* QR Code en la caja */}
+                <div className="absolute top-4 right-4">
+                  <QRCodeBadge 
+                    recipeId={recipe.id} 
+                    recipeName={recipe.name}
+                    size="md"
+                    showActions={true}
+                  />
+                </div>
+              </div>
+              
+              <h4 className="text-xl font-bold text-gray-900 mb-2">¿Qué incluye tu SweetKit?</h4>
+              <ul className="text-left text-gray-600 space-y-2">
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
+                  Ingredientes pre-medidos
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
+                  Código QR para la receta
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
+                  Instrucciones paso a paso
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
+                  Tips y consejos especiales
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* Instructions */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Smartphone size={24} className="text-orange-600" />
+                  Cómo usar tu SweetKit
+                </h4>
+                <div className="space-y-4">
+                  <div className="flex gap-4">
+                    <div className="bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      1
+                    </div>
+                    <p className="text-gray-600">Abre tu caja SweetKit</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      2
+                    </div>
+                    <p className="text-gray-600">Escanea el código QR con tu teléfono</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      3
+                    </div>
+                    <p className="text-gray-600">Sigue las instrucciones y ¡cocina!</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-orange-50 rounded-2xl p-6 border border-orange-200">
+                <h5 className="font-bold text-gray-900 mb-2">💡 Consejo</h5>
+                <p className="text-gray-600 text-sm">
+                  Guarda el código QR por si necesitas consultar la receta más tarde. 
+                  También puedes compartirlo con familiares y amigos.
+                </p>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
