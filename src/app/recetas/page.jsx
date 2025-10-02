@@ -10,10 +10,12 @@ import RecipeCard from '../components/RecipeCard';
 import { Package, Smartphone, Smile, Clock, Users, QrCode } from 'lucide-react';
 import QRCodeBadge from '../components/QRCodeBadge';
 import OptimizedImage from '../components/OptimizedImage';
+import { useWhatsApp } from '../hooks/useWhatsApp';
 
 export default function RecetasPage() {
   const [selectedCategory, setSelectedCategory] = useState('Todas las Recetas');
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+  const { sendGeneralMessage } = useWhatsApp();
 
   const handleCategoryFilter = (categoryName) => {
     setSelectedCategory(categoryName);
@@ -129,9 +131,18 @@ export default function RecetasPage() {
                     <span className="text-2xl font-bold text-orange-600">
                       ${recipe.price.toLocaleString()}
                     </span>
-                    <Button href={`/recetas/${recipe.id}`} variant="primary" size="sm">
-                      Ver Receta
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button href={`/recetas/${recipe.id}`} variant="outline" size="sm">
+                        Ver Receta
+                      </Button>
+                      <Button 
+                        onClick={() => sendGeneralMessage(`¡Hola! Me interesa comprar el SweetKit de ${recipe.name}. ¿Podrían ayudarme con más información?`)}
+                        variant="primary" 
+                        size="sm"
+                      >
+                        Comprar
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </motion.div>

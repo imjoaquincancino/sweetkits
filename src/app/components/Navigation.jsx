@@ -13,8 +13,9 @@ export default function Navigation({ currentPath = '/' }) {
   const navigationItems = [
     { name: 'Inicio', href: '/', current: currentPath === '/' },
     { name: 'Recetas', href: '/recetas', current: currentPath === '/recetas' },
-    { name: 'Sobre Nosotros', href: '#sobre-nosotros', current: false },
-    { name: 'Contacto', href: '#contacto', current: false },
+    { name: 'Cómo Comprar', href: '/como-comprar', current: currentPath === '/como-comprar' },
+    { name: 'Sobre Nosotros', href: '/sobre-nosotros', current: currentPath === '/sobre-nosotros' },
+    { name: 'Contacto', href: '/contacto', current: currentPath === '/contacto' },
   ];
 
   return (

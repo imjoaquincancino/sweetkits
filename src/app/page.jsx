@@ -10,8 +10,11 @@ import Link from 'next/link';
 import QRCodeDisplay from './components/QRCodeDisplay';
 import QRCodeBadge from './components/QRCodeBadge';
 import OptimizedImage from './components/OptimizedImage';
+import { useWhatsApp } from './hooks/useWhatsApp';
 
 export default function Home() {
+  const { sendGeneralMessage } = useWhatsApp();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-100">
       <Navigation currentPath="/" />
@@ -66,8 +69,8 @@ export default function Home() {
                   className="w-full h-auto rounded-3xl shadow-2xl"
                   fallback="📦"
                 />
-                
-                
+
+
                 {/* Floating Price Tag */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -143,15 +146,15 @@ export default function Home() {
                 {item.showQR && (
                   <div className="mt-4 flex flex-col items-center">
                     <div className="mb-2">
-                      <QRCodeBadge 
-                        recipeId={1} 
+                      <QRCodeBadge
+                        recipeId={1}
                         recipeName="Kuchen de Manzana"
                         size="md"
                         showActions={false}
                       />
                     </div>
                     <p className="text-xs text-gray-500 text-center">
-                      Escanea este código QR<br/>que viene en tu caja
+                      Escanea este código QR<br />que viene en tu caja
                     </p>
                   </div>
                 )}
@@ -253,7 +256,7 @@ export default function Home() {
                     className="w-full h-full object-cover"
                     fallback="🍰"
                   />
-                  
+
                   {/* SweetKit Brand Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
                     <div className="absolute bottom-4 left-4 right-4">
@@ -263,11 +266,11 @@ export default function Home() {
                       <p className="text-white font-medium text-sm">{recipe.name}</p>
                     </div>
                   </div>
-                  
+
                   {/* QR Code Badge */}
                   <div className="absolute top-4 right-4">
-                    <QRCodeBadge 
-                      recipeId={recipe.id} 
+                    <QRCodeBadge
+                      recipeId={recipe.id}
                       recipeName={recipe.name}
                       size="sm"
                       showActions={true}
@@ -278,7 +281,7 @@ export default function Home() {
                 <div className="p-6">
                   <h4 className="text-xl font-bold text-gray-900 mb-2">{recipe.name}</h4>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recipe.description}</p>
-                  
+
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                     <span className="flex items-center gap-1">
                       <Clock size={16} />
@@ -294,9 +297,18 @@ export default function Home() {
                     <span className="text-2xl font-bold text-orange-600">
                       ${recipe.price.toLocaleString()}
                     </span>
-                    <Button href={`/recetas/${recipe.id}`} variant="primary" size="sm">
-                      Ver Receta
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button href={`/recetas/${recipe.id}`} variant="outline" size="sm">
+                        Ver Receta
+                      </Button>
+                      <Button
+                        onClick={() => sendGeneralMessage(`¡Hola! Me interesa comprar el SweetKit de ${recipe.name}. ¿Podrían ayudarme con más información?`)}
+                        variant="primary"
+                        size="sm"
+                      >
+                        Comprar
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -338,9 +350,9 @@ export default function Home() {
                 Comprar SweetKit
               </Button>
               <Button
+                href="/como-comprar"
                 variant="secondary"
                 size="lg"
-                onClick={() => document.getElementById('como-funciona').scrollIntoView({ behavior: 'smooth' })}
                 icon="info"
               >
                 Cómo Comprar

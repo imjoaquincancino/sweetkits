@@ -9,11 +9,13 @@ import OptimizedImage from '../../components/OptimizedImage';
 import QRCodeDisplay from '../../components/QRCodeDisplay';
 import QRCodeBadge from '../../components/QRCodeBadge';
 import Navigation from '../../components/Navigation';
+import { useWhatsApp } from '../../hooks/useWhatsApp';
 
 export default function RecetaDetailPage() {
   const params = useParams();
   const recipeId = parseInt(params.id);
   const recipe = recipes.find(r => r.id === recipeId);
+  const { sendOrder } = useWhatsApp();
 
   if (!recipe) {
     return (
@@ -130,6 +132,7 @@ export default function RecetaDetailPage() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      onClick={() => sendOrder([{ ...recipe, quantity: 1 }], recipe.price)}
                       className="w-full bg-orange-600 text-white py-4 rounded-lg font-semibold hover:bg-orange-700 transition-colors shadow-lg flex items-center justify-center gap-2"
                     >
                       <ShoppingCart size={20} />
