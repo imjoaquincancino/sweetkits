@@ -63,12 +63,15 @@
 - **Hooks personalizados** - Gestión de estado específico por funcionalidad
 - **useState + useEffect** - Manejo de estado local y persistencia
 - **localStorage** - Persistencia de datos del usuario
-- **Datos hardcodeados** - Recetas en formato JSON (sin base de datos)
+- **MongoDB + Mongoose** - Base de datos para códigos QR
+- **Datos hardcodeados** - Recetas en formato JSON
 
 ### **Herramientas de Desarrollo**
 - **Turbopack** - Bundler ultra-rápido
 - **ESLint** - Linting de código
 - **PostCSS** - Procesamiento de CSS
+- **QRCode** - Generación de códigos QR
+- **Mongoose** - ODM para MongoDB
 
 ## 🏗️ Arquitectura del Sistema
 
@@ -209,6 +212,34 @@ import OptimizedImage from './components/OptimizedImage';
 **Fallback inteligente** a emojis si falla la imagen
 **Optimización de rendimiento** con transiciones suaves
 
+#### **QRCodeDisplay** (`components/QRCodeDisplay.jsx`)
+```jsx
+import QRCodeDisplay from './components/QRCodeDisplay';
+
+<QRCodeDisplay 
+  recipeId={1} 
+  recipeName="Kuchen de Manzana"
+  className="max-w-md"
+/>
+```
+
+**Generación automática** de códigos QR
+**Funcionalidades de descarga** y compartir
+**Estados de carga** y error manejados
+**Diseño responsive** y atractivo
+
+#### **useQRCode** (`hooks/useQRCode.js`)
+```jsx
+import { useQRCode } from './hooks/useQRCode';
+
+const { qrCode, url, isLoading, error, generateQRCode } = useQRCode(recipeId);
+```
+
+**Hook personalizado** para gestión de QR codes
+**Estados automáticos** de carga y error
+**Regeneración** bajo demanda
+**Integración** con API REST
+
 #### **Navigation** (`components/Navigation.jsx`)
 - **Navegación desktop** con indicadores activos
 - **Menú móvil** con animaciones suaves
@@ -305,11 +336,50 @@ const {
 - **Valores calculados** reactivos
 - **API simple** y fácil de usar
 
+## 🔌 API Endpoints
+
+### **GET /api/qr?recipeId={id}**
+Obtiene o genera un código QR para una receta específica.
+
+**Parámetros:**
+- `recipeId` (query): ID de la receta
+
+**Respuesta:**
+```json
+{
+  "success": true,
+  "qrCode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+  "url": "http://localhost:3000/recetas/1",
+  "recipeId": 1
+}
+```
+
+### **POST /api/qr**
+Genera un nuevo código QR para una receta.
+
+**Body:**
+```json
+{
+  "recipeId": 1
+}
+```
+
+**Respuesta:**
+```json
+{
+  "success": true,
+  "qrCode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+  "url": "http://localhost:3000/recetas/1",
+  "recipeId": 1
+}
+```
+
 ## 🚀 Instalación y Uso
 
 ### **Prerrequisitos**
 - Node.js 18+ 
 - npm o yarn
+- MongoDB (local o MongoDB Atlas)
 
 ### **Instalación**
 ```bash
@@ -319,6 +389,11 @@ cd sweetkits
 
 # Instalar dependencias
 npm install
+
+# Configurar variables de entorno
+# Crear archivo .env.local con:
+# MONGODB_URI=mongodb://localhost:27017/sweetkit
+# NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
 # Ejecutar en desarrollo
 npm run dev
@@ -354,30 +429,43 @@ src/app/
 sweetkits/
 ├── public/                 # Archivos estáticos
 ├── src/
-│   └── app/
-│       ├── components/     # Componentes reutilizables
-│       │   ├── Button.jsx
-│       │   ├── Navigation.jsx
-│       │   ├── RecipeCard.jsx
-│       │   ├── LoadingSpinner.jsx
-│       │   ├── Toast.jsx
-│       │   ├── ToastProvider.jsx
-│       │   └── OptimizedImage.jsx
-│       ├── hooks/         # Hooks personalizados
-│       │   ├── useCart.js
-│       │   ├── useFavorites.js
-│       │   └── useToast.js
-│       ├── data/          # Datos de la aplicación
-│       │   └── recipes.js
-│       ├── recetas/       # Páginas de recetas
-│       │   ├── page.jsx
-│       │   └── [id]/
-│       │       └── page.jsx
-│       ├── carrito/       # Página del carrito
-│       │   └── page.jsx
-│       ├── globals.css    # Estilos globales
-│       ├── layout.jsx     # Layout principal
-│       └── page.jsx       # Página principal
+│   ├── app/
+│   │   ├── components/     # Componentes reutilizables
+│   │   │   ├── Button.jsx
+│   │   │   ├── Navigation.jsx
+│   │   │   ├── RecipeCard.jsx
+│   │   │   ├── LoadingSpinner.jsx
+│   │   │   ├── Toast.jsx
+│   │   │   ├── ToastProvider.jsx
+│   │   │   ├── OptimizedImage.jsx
+│   │   │   └── QRCodeDisplay.jsx
+│   │   ├── hooks/         # Hooks personalizados
+│   │   │   ├── useCart.js
+│   │   │   ├── useFavorites.js
+│   │   │   ├── useToast.js
+│   │   │   └── useQRCode.js
+│   │   ├── api/           # API Routes
+│   │   │   └── qr/
+│   │   │       └── route.js
+│   │   ├── admin/         # Páginas de administración
+│   │   │   └── qr-codes/
+│   │   │       └── page.jsx
+│   │   ├── data/          # Datos de la aplicación
+│   │   │   └── recipes.js
+│   │   ├── recetas/       # Páginas de recetas
+│   │   │   ├── page.jsx
+│   │   │   └── [id]/
+│   │   │       └── page.jsx
+│   │   ├── carrito/       # Página del carrito
+│   │   │   └── page.jsx
+│   │   ├── globals.css    # Estilos globales
+│   │   ├── layout.jsx     # Layout principal
+│   │   └── page.jsx       # Página principal
+│   ├── lib/              # Utilidades y configuración
+│   │   ├── mongodb.js
+│   │   └── config.js
+│   └── models/           # Modelos de MongoDB
+│       └── QRCode.js
 ├── package.json
 ├── tailwind.config.js
 ├── next.config.js
@@ -500,6 +588,14 @@ import { Heart } from 'lucide-react';
 - [x] Fallback automático a emojis si falla la carga
 - [x] Animaciones de carga suaves
 - [x] Optimización automática de rendimiento
+
+#### **Sistema de Códigos QR**
+- [x] Generación automática de códigos QR para cada receta
+- [x] Almacenamiento en MongoDB con Mongoose
+- [x] API REST para gestión de códigos QR
+- [x] Componente QRCodeDisplay reutilizable
+- [x] Funcionalidades de descarga y compartir
+- [x] Página de administración para gestión masiva
 
 #### **Gestión de Estado**
 - [x] Hooks personalizados para funcionalidades específicas

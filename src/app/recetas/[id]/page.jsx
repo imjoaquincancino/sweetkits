@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { recipes } from '../../data/recipes';
 import { Clock, Users, DollarSign, Heart, Printer, Share, ShoppingCart } from 'lucide-react';
 import OptimizedImage from '../../components/OptimizedImage';
+import QRCodeDisplay from '../../components/QRCodeDisplay';
 
 export default function RecetaDetailPage() {
   const params = useParams();
@@ -277,6 +278,34 @@ export default function RecetaDetailPage() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* QR Code Section */}
+      <section className="py-12 bg-gradient-to-br from-orange-50 to-pink-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Código QR SweetKit
+            </h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Escanea este código QR para acceder rápidamente a esta receta desde tu caja SweetKit
+            </p>
+          </motion.div>
+
+          <div className="flex justify-center">
+            <QRCodeDisplay 
+              recipeId={recipe.id} 
+              recipeName={recipe.name}
+              className="max-w-md"
+            />
+          </div>
         </div>
       </section>
 
